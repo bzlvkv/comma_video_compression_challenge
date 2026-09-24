@@ -70,13 +70,17 @@ side-channel presence.
 
 ```bash
 # from the repo root, venv active, git-lfs assets present
-bash submissions/metricwarp_av1/compress.sh   # ~4-5 h on 8 CPU cores (search dominates)
+bash submissions/metricwarp_av1/compress.sh   # ~5-6 h on 8 CPU cores (searches dominate)
 bash evaluate.sh --submission-dir submissions/metricwarp_av1 --device cpu
 ```
 
-The search tooling lives in this repo's `work/` directory (fast cached-GT scorer,
-sweep harness, correction/seg-fix searchers, layer mixer, packager); `compress.sh`
-drives it end to end. The searches are deterministic given the same encoder output.
+`compress.sh` copies `tools/` into the repo-root `work/` scratch dir and drives it end
+to end. The encode needs the BtbN static ffmpeg build `N-125953-gd3ad8a7fee-20260803`
+(SVT-AV1 v4.1.0-279-gd3c4cb394) unpacked at `tools/ffmpeg-master-latest-linux64-gpl/`;
+a different SVT-AV1 build gives a different stream. With that build, re-runs matched the
+submitted archive's inputs byte for byte: the full encode, `target_512.raw`, mixing and
+packaging in full, and spot checks of the seg-fix and both pose searches (first 4 pairs
+each). Checked on an x86-64 CPU with AVX-512.
 
 ## Files
 
